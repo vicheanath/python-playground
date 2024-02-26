@@ -6,7 +6,3 @@ def infinite_sequence():
 
 values = infinite_sequence()
 
-for x in range(500):
-    
-    print(x)
-        
