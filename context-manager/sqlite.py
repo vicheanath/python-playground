@@ -13,7 +13,7 @@ class SQlite:
         logging.info('Called __enter__')
         return self.connection.cursor()
     
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(self, exc_type, exc_value, traceback) -> bool:
         """ Commit and close the connection """
         logging.info('Called __exit__')
         self.connection.commit()
