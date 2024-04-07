@@ -22,32 +22,30 @@ class BaseModel(Base):
     __abstract__ = True
     __allow_unmapped__ = True
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True)
 
 
-class Address(BaseModel):
-    __tablename__ = "address"
+class FollowingAssociation(BaseModel):
+    __tablename__ = "following_association"
 
-    street = Column(String)
-    city = Column(String)
-    state = Column(String)
-    zip = Column(String)
-    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
-    user: Mapped["User"] = relationship(back_populates="addresses")
-
-    def __repr__(self):
-        return f"<Address(street={self.street}, city={self.city}, state={self.state}, zip={self.zip})>"
+    user_id = Column(Integer, ForeignKey("users.id"))
+    following_id = Column(Integer, ForeignKey("users.id"))
 
 
 class User(BaseModel):
-    __tablename__ = "user"
+    __tablename__ = "users"
 
-    name = Column(String)
-    age = Column(Integer)
-    addresses: Mapped[list["Address"]] = relationship()
+    username = Column(String)
+
+    following = relationship(
+        "User",
+        secondary="following_association",
+        primaryjoin=("User.id==FollowingAssociation.user_id"),
+        secondaryjoin=("User.id==FollowingAssociation.following_id"),
+    )
 
     def __repr__(self):
-        return f"<User(name={self.name}, age={self.age})>"
+        return f"<User(username={self.username}, following={self.following})>"
 
 
 Base.metadata.create_all(engine)
